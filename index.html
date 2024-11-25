@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>UKUR JARAK V1.1</title>
+  
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pengukur Jarak Modern</title>
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Body */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1e1e2f, #121212);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Container */
+    .container {
+      background: rgba(30, 30, 47, 0.8);
+      border-radius: 15px;
+      padding: 25px 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 255, 255, 0.3);
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      animation: fadeIn 1.2s ease-out;
+    }
+
+    /* Title */
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #00e6e6;
+      text-shadow: 0 0 8px #00ffff, 0 0 15px #00e6e6;
+      animation: textGlow 2s infinite alternate;
+    }
+
+    /* Input Fields */
+    input[type="text"] {
+      width: calc(50% - 10px);
+      padding: 12px;
+      margin: 10px 5px;
+      border: none;
+      border-radius: 8px;
+      background-color: #1a1a2e;
+      color: #00e6e6;
+      font-size: 1rem;
+      text-align: center;
+      box-shadow: 0 0 10px #00ffff, inset 0 0 8px #007f7f;
+      outline: none;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    input[type="text"]:focus {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #00e6e6, inset 0 0 12px #00e6e6;
+    }
+
+    /* Button */
+    button {
+      margin-top: 20px;
+      padding: 12px 20px;
+      background: linear-gradient(135deg, #00e6e6, #007f7f);
+      color: #ffffff;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(0, 255, 255, 0.4), 0 0 20px #00ffff;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 24px rgba(0, 255, 255, 0.6), 0 0 25px #00ffff;
+    }
+
+    /* Result Area */
+    .result {
+      margin-top: 20px;
+      text-align: left;
+      opacity: 0;
+      animation: fadeInResult 1s ease-out forwards;
+    }
+
+    .result p {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #e0e0e0;
+    }
+
+    .result img {
+      width: 100%;
+      border-radius: 10px;
+      margin-top: 15px;
+      box-shadow: 0 8px 16px rgba(0, 255, 255, 0.4), 0 0 15px #00e6e6;
+      animation: zoomIn 0.8s ease-out;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInResult {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes zoomIn {
+      from {
+        transform: scale(0.8);
+      }
+      to {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes textGlow {
+      to {
+        text-shadow: 0 0 12px #00ffff, 0 0 25px #00e6e6;
+      }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 600px) {
+      input[type="text"] {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 Pengukur Jarak</h1>
+    <div>
+      <input type="text" id="dari" placeholder="Kota asal (contoh: Tegal)">
+      <input type="text" id="ke" placeholder="Kota tujuan (contoh: Jakarta)">
+    </div>
+    <button onclick="ukurJarak()">Hitung Jarak</button>
+    <div id="hasil" class="result"></div>
+  </div>
+
+  <script>
+    async function ukurJarak() {
+      const dari = document.getElementById("dari").value;
+      const ke = document.getElementById("ke").value;
+      const hasil = document.getElementById("hasil");
+
+      if (!dari || !ke) {
+        hasil.innerHTML = "<p>⚠️ Mohon isi kedua kota terlebih dahulu.</p>";
+        return;
+      }
+
+      hasil.style.opacity = "0"; // Hide result before displaying new content
+      hasil.innerHTML = "<p style='text-align:center;'>⏳ Menghitung jarak...</p>";
+
+      try {
+        const response = await fetch(`https://aemt.uk.to/jarak?dari=${encodeURIComponent(dari)}&ke=${encodeURIComponent(ke)}`);
+        
+        if (!response.ok) {
+          throw new Error("Gagal mengambil data dari API.");
+        }
+
+        const data = await response.json();
+
+        if (data.status && data.url.status) {
+          hasil.innerHTML = `
+            <p>📍 ${data.url.desc}</p>
+            <img src="${data.url.data}" alt="Peta Perjalanan">
+          `;
+        } else {
+          hasil.innerHTML = "<p>❌ Gagal mendapatkan jarak. Coba lagi dengan data yang benar.</p>";
+        }
+      } catch (error) {
+        console.error(error);
+        hasil.innerHTML = "<p>⚠️ Terjadi kesalahan saat mengambil data. Coba lagi nanti.</p>";
+      }
+
+      hasil.style.opacity = "1"; // Show result
+    }
+  </script>
+</body>
+</html>
+<!-- partial -->
+  
+</body>
+</html>
