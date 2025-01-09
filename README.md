@@ -39,9 +39,9 @@
 
 ```
 📦 Pengukur Jarak Modern
-├── 📄 index.html        # File utama aplikasi
-├── 📂 assets           # (Opsional) Folder untuk gambar atau ikon tambahan
-└── 📄 README.md         # Dokumentasi proyek
+├── 📄 index.html # File utama aplikasi
+├── 📂 assets # (Opsional) Folder untuk gambar atau ikon tambahan
+└── 📄 README.md # Dokumentasi proyek
 ```
 
 ---
